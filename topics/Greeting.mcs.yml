@@ -20,9 +20,11 @@ beginDialog:
       id: sendMessage_abmysR
       activity:
         text:
-          - Hello, how can I help you today?
+          - |-
+            Hello. I can help you practice interviews in Backend, Frontend, DBMS, or Power Platform.
+            Say "Start interview" to begin.
         speak:
-          - Hello, <break strength="medium" /> how can I help?
+          - Hello. I can help you practice interviews. Say start interview to begin.
 
     - kind: CancelAllDialogs
       id: cancelAllDialogs_01At22

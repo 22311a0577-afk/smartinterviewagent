@@ -13,7 +13,7 @@ beginDialog:
         allowInterruption: true
 
       variable: init:Global.usertopic
-      prompt: Which topic do you want? (Backend / Frontend / DBMS / Power Platform)
+      prompt: Choose an interview track: Backend, Frontend, DBMS, or Power Platform.
       entity:
         kind: ClosedListEntityReference
         entityId: cr994_agent.entity.TopicEntity
@@ -82,7 +82,7 @@ beginDialog:
       variable: init:Topic.useranswer
       prompt: |-
         {Topic.Question.text}
-        Your answer:
+        Your answer (be concise and technical):
       entity: StringPrebuiltEntity
 
     - kind: SetMultipleVariables
@@ -112,6 +112,11 @@ beginDialog:
     - kind: SendActivity
       id: sendActivity_aUxZIk
       activity: "{Topic.Evaluatedanswer.text}"
+
+    - kind: SetVariable
+      id: setVariable_uA57hP
+      variable: Topic.feedback
+      value: =Topic.Evaluatedanswer.text
 
     - kind: InvokeFlowAction
       id: invokeFlowAction_VDY9Gm

@@ -5,6 +5,7 @@ kind: AdaptiveDialog
 beginDialog:
   kind: OnUnknownIntent
   id: main
+  priority: -2
   actions:
     - kind: ConditionGroup
       id: conditionGroup_LktzXw
@@ -14,7 +15,14 @@ beginDialog:
           actions:
             - kind: SendActivity
               id: sendMessage_QZreqo
-              activity: I'm sorry, I'm not sure how to help with that. Can you try rephrasing?
+              activity: |-
+                I can help with interview practice and technical Q&A.
+                Try one of these:
+                - Start interview
+                - Ask a Backend question
+                - Ask a Frontend question
+                - Ask a DBMS question
+                - Ask a Power Platform question
 
       elseActions:
         - kind: BeginDialog

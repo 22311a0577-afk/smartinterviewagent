@@ -10,6 +10,13 @@ beginDialog:
       id: sendMessage_M0LuhV
       activity:
         text:
-          - Hello, I'm {System.Bot.Name}. How can I help?
+          - |-
+            Hello, I'm {System.Bot.Name}.
+            I can run a technical mock interview and score each answer.
+
+            Try one of these:
+            - "Start interview"
+            - "Practice frontend"
+            - "Ask a DBMS question"
         speak:
-          - Hello and thank you for calling {System.Bot.Name}, powered by generative AI. How may I help you today?
+          - Hello, I am {System.Bot.Name}. I can run a technical mock interview and score each answer. Say start interview to begin.
