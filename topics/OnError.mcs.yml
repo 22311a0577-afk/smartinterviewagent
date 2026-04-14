@@ -36,8 +36,9 @@ beginDialog:
                 Error code: {System.Error.Code}
                 Conversation Id: {System.Conversation.Id}
                 Time (UTC): {Topic.CurrentTime}.
+                You can type "start interview" to continue.
             speak:
-              - An error has occurred, please try again.
+              - An error has occurred. Please try again by saying start interview.
 
     - kind: LogCustomTelemetryEvent
       id: 9KwEAn

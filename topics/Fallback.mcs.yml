@@ -19,12 +19,19 @@ beginDialog:
                 I can help with interview practice and technical Q&A.
                 Try one of these:
                 - Start interview
+                - Help
                 - Ask a Backend question
                 - Ask a Frontend question
                 - Ask a DBMS question
                 - Ask a Power Platform question
 
       elseActions:
-        - kind: BeginDialog
-          id: 5aXj5M
-          dialog: cr994_agent.topic.Escalate
+        - kind: SendActivity
+          id: sendMessage_QZreqo_2
+          activity: |-
+            I still couldn't match that request.
+            You can type:
+            - Start interview
+            - Help
+            - Start over
+            - Backend / Frontend / DBMS / Power Platform question

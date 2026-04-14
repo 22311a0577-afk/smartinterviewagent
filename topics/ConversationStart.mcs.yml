@@ -18,5 +18,6 @@ beginDialog:
             - "Start interview"
             - "Practice frontend"
             - "Ask a DBMS question"
+            - "Help"
         speak:
           - Hello, I am {System.Bot.Name}. I can run a technical mock interview and score each answer. Say start interview to begin.

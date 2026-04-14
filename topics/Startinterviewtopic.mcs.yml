@@ -46,6 +46,13 @@ beginDialog:
         - variable: Global.interviewsummary
           value: =Text("")
 
+        - variable: Global.askedquestions
+          value: =Text("")
+
+        - variable: Global.duplicateregeneratecount
+          value: 0
+        
+
     - kind: InvokeAIBuilderModelAction
       id: invokeAIBuilderModelAction_n9GM6W
       input:
@@ -60,6 +67,30 @@ beginDialog:
           predictionOutput: Topic.Question
 
       aIModelId: 6c627dc1-71ff-48e4-ba0f-5b10d33855e7
+
+    - kind: ConditionGroup
+      id: conditionGroup_nonrepeat
+      conditions:
+        - id: conditionItem_nonrepeat_1
+          condition: =!IsBlank(Global.askedquestions) && (Lower(Topic.Question.text) in Lower(Global.askedquestions)) && Global.duplicateregeneratecount < 2
+          actions:
+            - kind: SetVariable
+              id: setVariable_nonrepeatcounter
+              variable: Global.duplicateregeneratecount
+              value: =Global.duplicateregeneratecount + 1
+
+            - kind: SendActivity
+              id: sendActivity_nonrepeat
+              activity: I generated a duplicate question. Let me pick a different one.
+
+            - kind: GotoAction
+              id: gotoAction_nonrepeat
+              actionId: invokeAIBuilderModelAction_n9GM6W
+
+    - kind: SetVariable
+      id: setVariable_trackasked
+      variable: Global.askedquestions
+      value: =Global.askedquestions & "||" & Topic.Question.text
 
     - kind: InvokeFlowAction
       id: invokeFlowAction_pYlu6v
@@ -77,13 +108,67 @@ beginDialog:
     - kind: Question
       id: question_VrT22D
       interruptionPolicy:
-        allowInterruption: true
+        allowInterruption: false
 
       variable: init:Topic.useranswer
       prompt: |-
         {Topic.Question.text}
-        Your answer (be concise and technical):
+        Your answer (be concise and technical).
+        Commands: type "help" for commands, "skip" to move to next question, "retry" to answer this question again, or "stop" to end interview.
       entity: StringPrebuiltEntity
+
+    - kind: SetVariable
+      id: setVariable_usercommand
+      variable: Topic.usercommand
+      value: =Lower(Trim(Topic.useranswer))
+
+    - kind: ConditionGroup
+      id: conditionGroup_usercommands
+      conditions:
+        - id: conditionItem_cmd_stop
+          condition: =Topic.usercommand = "stop" || Topic.usercommand = "quit" || Topic.usercommand = "end"
+          actions:
+            - kind: SendActivity
+              id: sendActivity_cmd_stop
+              activity: Interview stopped. Here is your summary so far.
+
+            - kind: GotoAction
+              id: gotoAction_cmd_stop
+              actionId: sendActivity_LoeMtx
+
+        - id: conditionItem_cmd_retry
+          condition: =Topic.usercommand = "retry" || Topic.usercommand = "repeat"
+          actions:
+            - kind: SendActivity
+              id: sendActivity_cmd_retry
+              activity: Re-asking the same question.
+
+            - kind: GotoAction
+              id: gotoAction_cmd_retry
+              actionId: question_VrT22D
+
+        - id: conditionItem_cmd_skip
+          condition: =Topic.usercommand = "skip"
+          actions:
+            - kind: SetMultipleVariables
+              id: setVariable_cmd_skip
+              assignments:
+                - variable: Topic.useranswer
+                  value: ="[Skipped by user]"
+
+                - variable: Topic.scoreperquestion
+                  value: 0
+
+                - variable: Topic.feedback
+                  value: ="Question skipped by user."
+
+            - kind: SendActivity
+              id: sendActivity_cmd_skip
+              activity: Skipped. Moving to the next question.
+
+            - kind: GotoAction
+              id: gotoAction_cmd_skip
+              actionId: setVariable_Cg3tnh
 
     - kind: SetMultipleVariables
       id: setVariable_nPPTQV
@@ -117,6 +202,108 @@ beginDialog:
       id: setVariable_uA57hP
       variable: Topic.feedback
       value: =Topic.Evaluatedanswer.text
+
+    - kind: ConditionGroup
+      id: conditionGroup_scoremapping
+      conditions:
+        - id: conditionItem_score_10
+          condition: =("score: 10/10" in Lower(Topic.Evaluatedanswer.text)) || ("score 10/10" in Lower(Topic.Evaluatedanswer.text)) || ("score - 10/10" in Lower(Topic.Evaluatedanswer.text))
+          actions:
+            - kind: SetVariable
+              id: setVariable_score_10
+              variable: Topic.scoreperquestion
+              value: 10
+
+        - id: conditionItem_score_9
+          condition: =("score: 9/10" in Lower(Topic.Evaluatedanswer.text)) || ("score 9/10" in Lower(Topic.Evaluatedanswer.text)) || ("score - 9/10" in Lower(Topic.Evaluatedanswer.text))
+          actions:
+            - kind: SetVariable
+              id: setVariable_score_9
+              variable: Topic.scoreperquestion
+              value: 9
+
+        - id: conditionItem_score_8
+          condition: =("score: 8/10" in Lower(Topic.Evaluatedanswer.text)) || ("score 8/10" in Lower(Topic.Evaluatedanswer.text)) || ("score - 8/10" in Lower(Topic.Evaluatedanswer.text))
+          actions:
+            - kind: SetVariable
+              id: setVariable_score_8
+              variable: Topic.scoreperquestion
+              value: 8
+
+        - id: conditionItem_score_7
+          condition: =("score: 7/10" in Lower(Topic.Evaluatedanswer.text)) || ("score 7/10" in Lower(Topic.Evaluatedanswer.text)) || ("score - 7/10" in Lower(Topic.Evaluatedanswer.text))
+          actions:
+            - kind: SetVariable
+              id: setVariable_score_7
+              variable: Topic.scoreperquestion
+              value: 7
+
+        - id: conditionItem_score_6
+          condition: =("score: 6/10" in Lower(Topic.Evaluatedanswer.text)) || ("score 6/10" in Lower(Topic.Evaluatedanswer.text)) || ("score - 6/10" in Lower(Topic.Evaluatedanswer.text))
+          actions:
+            - kind: SetVariable
+              id: setVariable_score_6
+              variable: Topic.scoreperquestion
+              value: 6
+
+        - id: conditionItem_score_5
+          condition: =("score: 5/10" in Lower(Topic.Evaluatedanswer.text)) || ("score 5/10" in Lower(Topic.Evaluatedanswer.text)) || ("score - 5/10" in Lower(Topic.Evaluatedanswer.text))
+          actions:
+            - kind: SetVariable
+              id: setVariable_score_5
+              variable: Topic.scoreperquestion
+              value: 5
+
+        - id: conditionItem_score_4
+          condition: =("score: 4/10" in Lower(Topic.Evaluatedanswer.text)) || ("score 4/10" in Lower(Topic.Evaluatedanswer.text)) || ("score - 4/10" in Lower(Topic.Evaluatedanswer.text))
+          actions:
+            - kind: SetVariable
+              id: setVariable_score_4
+              variable: Topic.scoreperquestion
+              value: 4
+
+        - id: conditionItem_score_3
+          condition: =("score: 3/10" in Lower(Topic.Evaluatedanswer.text)) || ("score 3/10" in Lower(Topic.Evaluatedanswer.text)) || ("score - 3/10" in Lower(Topic.Evaluatedanswer.text))
+          actions:
+            - kind: SetVariable
+              id: setVariable_score_3
+              variable: Topic.scoreperquestion
+              value: 3
+
+        - id: conditionItem_score_2
+          condition: =("score: 2/10" in Lower(Topic.Evaluatedanswer.text)) || ("score 2/10" in Lower(Topic.Evaluatedanswer.text)) || ("score - 2/10" in Lower(Topic.Evaluatedanswer.text))
+          actions:
+            - kind: SetVariable
+              id: setVariable_score_2
+              variable: Topic.scoreperquestion
+              value: 2
+
+        - id: conditionItem_score_1
+          condition: =("score: 1/10" in Lower(Topic.Evaluatedanswer.text)) || ("score 1/10" in Lower(Topic.Evaluatedanswer.text)) || ("score - 1/10" in Lower(Topic.Evaluatedanswer.text))
+          actions:
+            - kind: SetVariable
+              id: setVariable_score_1
+              variable: Topic.scoreperquestion
+              value: 1
+
+        - id: conditionItem_score_0
+          condition: =("score: 0/10" in Lower(Topic.Evaluatedanswer.text)) || ("score 0/10" in Lower(Topic.Evaluatedanswer.text)) || ("score - 0/10" in Lower(Topic.Evaluatedanswer.text))
+          actions:
+            - kind: SetVariable
+              id: setVariable_score_0
+              variable: Topic.scoreperquestion
+              value: 0
+
+      elseActions:
+        - kind: SetVariable
+          id: setVariable_score_default
+          variable: Topic.scoreperquestion
+          value: 0
+
+        - kind: SetVariable
+          id: setVariable_score_default_feedback
+          variable: Topic.feedback
+          value: =Topic.feedback & "\nScore parse fallback used: 0/10."
 
     - kind: InvokeFlowAction
       id: invokeFlowAction_VDY9Gm
@@ -182,6 +369,11 @@ beginDialog:
         - id: conditionItem_tNeD3O
           condition: =Global.questioncount < 5
           actions:
+            - kind: SetVariable
+              id: setVariable_resetduplicateregeneratecount
+              variable: Global.duplicateregeneratecount
+              value: 0
+
             - kind: GotoAction
               id: U3gWSy
               actionId: invokeAIBuilderModelAction_n9GM6W
@@ -229,7 +421,7 @@ beginDialog:
         - kind: SetVariable
           id: setVariable_A9JeWk
           variable: Topic.avgscore
-          value: =Global.totalscore/Global.questioncount
+          value: =If(Global.questioncount = 0, 0, Global.totalscore/Global.questioncount)
 
         - kind: InvokeFlowAction
           id: invokeFlowAction_L4WEjU

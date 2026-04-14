@@ -61,6 +61,6 @@ beginDialog:
       id: sendMessage_s39DCt
       conversationOutcome: Escalated
       activity: |-
-        Escalating to a representative is not currently configured for this agent, however this is where the agent could provide information about how to get in touch with someone another way.
-
-        Is there anything else I can help you with?
+        Live agent handoff is not configured in this bot.
+        I can still help with mock interviews and technical Q&A.
+        Try: "Start interview".

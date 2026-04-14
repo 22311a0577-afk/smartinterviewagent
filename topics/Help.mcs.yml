@@ -1,0 +1,32 @@
+mcs.metadata:
+  componentName: Help
+  description: This topic explains the supported commands and interview actions.
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    displayName: Help
+    includeInOnSelectIntent: false
+    triggerQueries:
+      - help
+      - commands
+      - what can i do
+      - what can you do
+      - options
+
+  actions:
+    - kind: SendActivity
+      id: sendMessage_help
+      activity: |-
+        I can help with technical interview practice.
+
+        Commands you can use:
+        - Start interview
+        - Backend, Frontend, DBMS, or Power Platform
+        - skip: move to the next question
+        - retry: ask the same question again
+        - stop: end the interview early
+        - start over: reset the conversation
+
+        You can also ask for a Backend, Frontend, DBMS, or Power Platform question directly.

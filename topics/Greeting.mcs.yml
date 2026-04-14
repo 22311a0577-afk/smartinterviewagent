@@ -22,9 +22,6 @@ beginDialog:
         text:
           - |-
             Hello. I can help you practice interviews in Backend, Frontend, DBMS, or Power Platform.
-            Say "Start interview" to begin.
+            Say "Start interview" to begin or "Help" to see the available commands.
         speak:
           - Hello. I can help you practice interviews. Say start interview to begin.
-
-    - kind: CancelAllDialogs
-      id: cancelAllDialogs_01At22
