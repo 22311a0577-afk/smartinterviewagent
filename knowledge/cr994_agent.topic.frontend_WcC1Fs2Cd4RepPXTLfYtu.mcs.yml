@@ -1,0 +1,7 @@
+mcs.metadata:
+  componentName: frontend
+  description: This knowledge source searches information on the web found in https://www.testmuai.com/learning-hub/frontend-interview-questions/ website
+kind: KnowledgeSourceConfiguration
+source:
+  kind: PublicSiteSearchSource
+  site: https://www.testmuai.com/learning-hub/frontend-interview-questions/

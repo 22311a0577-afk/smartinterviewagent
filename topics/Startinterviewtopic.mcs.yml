@@ -1,0 +1,258 @@
+mcs.metadata:
+  componentName: Start interview topic
+kind: AdaptiveDialog
+modelDescription: Use this topic when the user asks to start an interview, practice interview questions, or test their knowledge in any technical domain.
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent: {}
+  actions:
+    - kind: Question
+      id: question_KOIetb
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Global.usertopic
+      prompt: Which topic do you want? (Backend / Frontend / DBMS / Power Platform)
+      entity:
+        kind: ClosedListEntityReference
+        entityId: cr994_agent.entity.TopicEntity
+
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_geJm2T
+      input:
+        binding:
+          number: 0
+          text: InterviewStarted
+          text_1: =System.User.Email
+          text_2: =Text(Global.usertopic)
+          text_4: "\"Started\""
+
+      output: {}
+      flowId: 4ee961ed-1837-f111-88b3-7ced8d71b78c
+
+    - kind: SetMultipleVariables
+      id: setVariable_pnabt6
+      assignments:
+        - variable: Global.difficulty
+          value: Easy
+
+        - variable: Global.questioncount
+          value: 0
+
+        - variable: Global.totalscore
+          value: 0
+
+        - variable: Global.interviewsummary
+          value: =Text("")
+
+    - kind: InvokeAIBuilderModelAction
+      id: invokeAIBuilderModelAction_n9GM6W
+      input:
+        binding:
+          difficulty: =Text(Global.difficulty)
+          interview_20summary: =Text(Global.interviewsummary)
+          usertopic: |
+            =Text(Global.usertopic)
+
+      output:
+        binding:
+          predictionOutput: Topic.Question
+
+      aIModelId: 6c627dc1-71ff-48e4-ba0f-5b10d33855e7
+
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_pYlu6v
+      input:
+        binding:
+          number: =Global.totalscore
+          text: QuestionAsked
+          text_1: =System.User.Email
+          text_2: =Text(Global.usertopic)
+          text_4: Asked
+
+      output: {}
+      flowId: 4ee961ed-1837-f111-88b3-7ced8d71b78c
+
+    - kind: Question
+      id: question_VrT22D
+      interruptionPolicy:
+        allowInterruption: true
+
+      variable: init:Topic.useranswer
+      prompt: |-
+        {Topic.Question.text}
+        Your answer:
+      entity: StringPrebuiltEntity
+
+    - kind: SetMultipleVariables
+      id: setVariable_nPPTQV
+      assignments:
+        - variable: Topic.scoreperquestion
+          value: 0
+
+        - variable: Topic.feedback
+          value: =""
+
+    - kind: InvokeAIBuilderModelAction
+      id: invokeAIBuilderModelAction_CqU6rW
+      input:
+        binding:
+          CurrentQuestion: =Topic.Question.text
+          feedback: =Topic.feedback
+          score: =Text(Topic.scoreperquestion)
+          useranswer: =Topic.useranswer
+
+      output:
+        binding:
+          predictionOutput: Topic.Evaluatedanswer
+
+      aIModelId: cd19e6fc-6849-481c-ae75-774e4513591d
+
+    - kind: SendActivity
+      id: sendActivity_aUxZIk
+      activity: "{Topic.Evaluatedanswer.text}"
+
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_VDY9Gm
+      input:
+        binding:
+          number: =Global.totalscore
+          text: AnswerEvaluated
+          text_1: =System.User.Email
+          text_2: |
+            =Text(Global.usertopic)
+          text_4: Evaluated
+
+      output: {}
+      flowId: 4ee961ed-1837-f111-88b3-7ced8d71b78c
+
+    - kind: SetMultipleVariables
+      id: setVariable_Cg3tnh
+      assignments:
+        - variable: Global.totalscore
+          value: =Global.totalscore + Topic.scoreperquestion
+
+        - variable: Global.interviewsummary
+          value: |-
+            =Global.interviewsummary &
+            "Q: " & Topic.Question.text &
+            "\nA: " & Topic.useranswer &
+            "\nScore: " & Topic.scoreperquestion &
+            "\nFeedback: " & Topic.feedback & "\n\n"
+
+    - kind: ConditionGroup
+      id: conditionGroup_xqiCMI
+      conditions:
+        - id: conditionItem_OeDTx0
+          condition: =Topic.scoreperquestion >= 8
+          actions:
+            - kind: SetVariable
+              id: setVariable_rIq1FF
+              variable: Global.difficulty
+              value: Hard
+
+        - id: conditionItem_gE6BWJ
+          condition: =Topic.scoreperquestion >= 5
+          actions:
+            - kind: SetVariable
+              id: setVariable_oZ2XAW
+              variable: Global.difficulty
+              value: Medium
+
+      elseActions:
+        - kind: SetVariable
+          id: setVariable_BpC66K
+          variable: Global.difficulty
+          value: Easy
+
+    - kind: SetVariable
+      id: setVariable_M44s9R
+      variable: Global.questioncount
+      value: =Global.questioncount+1
+
+    - kind: ConditionGroup
+      id: conditionGroup_ogj300
+      conditions:
+        - id: conditionItem_tNeD3O
+          condition: =Global.questioncount < 5
+          actions:
+            - kind: GotoAction
+              id: U3gWSy
+              actionId: invokeAIBuilderModelAction_n9GM6W
+
+      elseActions:
+        - kind: SendActivity
+          id: sendActivity_LoeMtx
+          activity:
+            attachments:
+              - kind: AdaptiveCardTemplate
+                cardContent: |-
+                  {
+                    "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
+                    "type": "AdaptiveCard",
+                    "version": "1.5",
+                    "body": [
+                      {
+                        "type": "TextBlock",
+                        "text": "🎉 Interview Completed",
+                        "weight": "Bolder",
+                        "size": "Large",
+                        "color": "Good"
+                      },
+                      {
+                        "type": "TextBlock",
+                        "text": "Thank you for attempting the interview.",
+                        "wrap": true,
+                        "spacing": "Medium"
+                      },
+                      {
+                        "type": "TextBlock",
+                        "text": "Your responses have been evaluated successfully.",
+                        "wrap": true,
+                        "spacing": "Small"
+                      },
+                      {
+                        "type": "TextBlock",
+                        "text": "📧 A detailed report has been sent to your registered email.",
+                        "wrap": true,
+                        "spacing": "Small"
+                      }
+                    ]
+                  }
+
+        - kind: SetVariable
+          id: setVariable_A9JeWk
+          variable: Topic.avgscore
+          value: =Global.totalscore/Global.questioncount
+
+        - kind: InvokeFlowAction
+          id: invokeFlowAction_L4WEjU
+          input:
+            binding:
+              number: =Topic.avgscore
+              text: =System.User.Email
+              text_1: =Global.interviewsummary
+              text_2: =Text(Global.usertopic)
+
+          output: {}
+          flowId: 255264fd-e236-f111-88b4-7ced8d75a980
+
+        - kind: InvokeFlowAction
+          id: invokeFlowAction_2uT8s8
+          input:
+            binding:
+              number: =Global.totalscore
+              text: InterviewCompleted
+              text_1: =System.User.Email
+              text_2: =Text(Global.usertopic)
+              text_4: completed
+
+          output: {}
+          flowId: 4ee961ed-1837-f111-88b3-7ced8d71b78c
+
+    - kind: EndConversation
+      id: ADVfff
+
+inputType: {}
+outputType: {}

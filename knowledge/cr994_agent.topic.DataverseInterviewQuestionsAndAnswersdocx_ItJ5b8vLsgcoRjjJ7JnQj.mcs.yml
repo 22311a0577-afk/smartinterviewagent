@@ -1,0 +1,10 @@
+mcs.metadata:
+  componentName: Dataverse Interview Questions And Answers.docx
+  description: This knowledge source provides information found in Dataverse Interview Questions And Answers.docx SharePoint.
+kind: KnowledgeSourceConfiguration
+source:
+  kind: FederatedStructuredSearchSource
+  connectionProperties:
+    mode: Invoker
+
+  skillConfiguration: DataverseInterviewQuestionsAndAnswersdocx_yM6UZ8deNK9aKBs9OSgrK

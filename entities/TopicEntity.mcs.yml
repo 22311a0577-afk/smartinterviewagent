@@ -1,0 +1,15 @@
+mcs.metadata:
+  componentName: TopicEntity
+kind: ClosedListEntity
+items:
+  - id: H7SBtJ
+    displayName: Backend
+
+  - id: JG3I5b
+    displayName: Frontend
+
+  - id: YTtXxw
+    displayName: power platform
+
+  - id: A8sIeW
+    displayName: DBMS

@@ -1,0 +1,7 @@
+mcs.metadata:
+  componentName: frontend101
+  description: This knowledge source searches information on the web found in https://www.tpointtech.com/front-end-developer-interview-questions website
+kind: KnowledgeSourceConfiguration
+source:
+  kind: PublicSiteSearchSource
+  site: https://www.tpointtech.com/front-end-developer-interview-questions

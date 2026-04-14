@@ -1,0 +1,7 @@
+mcs.metadata:
+  componentName: backend1
+  description: This knowledge source searches information on the web found in https://www.skilr.com/blog/top-50-backend-developer-interview-questions-and-answers/ website
+kind: KnowledgeSourceConfiguration
+source:
+  kind: PublicSiteSearchSource
+  site: https://www.skilr.com/blog/top-50-backend-developer-interview-questions-and-answers/

@@ -1,0 +1,7 @@
+mcs.metadata:
+  componentName: gfgbackend
+  description: This knowledge source searches information on the web found in https://www.geeksforgeeks.org/interview-prep/backend-developer-interview-questions-and-answers/ website
+kind: KnowledgeSourceConfiguration
+source:
+  kind: PublicSiteSearchSource
+  site: https://www.geeksforgeeks.org/interview-prep/backend-developer-interview-questions-and-answers/
